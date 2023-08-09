@@ -75,6 +75,7 @@ CREATE TABLE public.services (
     title character varying(30) NOT NULL,
     description text NOT NULL,
     image text NOT NULL,
+    price numeric(10, 2) NOT NULL,
     active boolean DEFAULT true NOT NULL,
     created_at timestamp without time zone DEFAULT now() NOT NULL
 );

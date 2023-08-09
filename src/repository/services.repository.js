@@ -1,31 +1,32 @@
 import { db } from "../database/database.connection.js";
 
 export async function createService(userId, service) {
-    const { categoryId, title, description, image } = service;
+    const { categoryId, title, description, image, price } = service;
 
     await db.query(`
-        INSERT INTO services ("user_id", "category_id" , "title", "description", "image") 
-        VALUES ( $1, $2, $3, $4, $5 )
+        INSERT INTO services ("user_id", "category_id" , "title", "description", "image", "price") 
+        VALUES ( $1, $2, $3, $4, $5, $6 )
     `, [
         userId,
         categoryId,
         title,
         description,
         image,
+        price,
     ]);
 }
 
 export async function getServices(state, limit, category) {
     let query = `
         SELECT 
-            s.id, s.title, c.category, s.description, s.image, 
+            s.id, s.title, c.category, s.description, s.image, s.price,
             u.name as provider, u.email as contact, 
             a.state as state, a.city as city
         FROM services s
         INNER JOIN users u ON s.user_id = u.id
         LEFT JOIN categories c ON s.category_id = c.id
-        LEFT JOIN addresses a ON s.user_id = a.user_id
-        WHERE s.active = true
+        LEFT JOIN addresses a ON u.id = a.user_id
+        WHERE s.active = true;
     `;
 
     let conditions = [];
@@ -56,7 +57,7 @@ export async function getServices(state, limit, category) {
 
 export async function getServicesById(id) {
     const services = await db.query(`
-        SELECT s.id, c.category, s.title, s.description, s.image, s.active 
+        SELECT s.id, c.category, s.title, s.description, s.image, s.price, s.active 
         FROM services s
         LEFT JOIN categories c ON s.category_id = c.id 
         WHERE user_id = $1`, 

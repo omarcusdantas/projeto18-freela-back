@@ -5,4 +5,5 @@ export const serviceSchema = joi.object({
     title: joi.string().max(30).required(),
     description: joi.string().required(),
     image: joi.string().uri().required(),
+    price: joi.number().min(0).required(),
 });
