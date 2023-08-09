@@ -1,4 +1,4 @@
-import { createService, getServices, getServicesById } from "../repository/services.repository.js";
+import { createService, getServices, getServicesByUserId, getServiceById } from "../repository/services.repository.js";
 
 export async function addService(req, res) {
     const userId = res.locals.userId;
@@ -30,8 +30,19 @@ export async function retrieveUserServices(req, res) {
     const userId = res.locals.userId;
 
     try {
-        const services = await getServicesById(userId);
+        const services = await getServicesByUserId(userId);
         res.send(services);
+    } catch (error) {
+        return res.status(500).send(error.message);
+    }
+}
+
+export async function retrieveServiceById(req, res) {
+    const id = req.params.id;
+
+    try {
+        const service = await getServiceById(id);
+        res.send(service);
     } catch (error) {
         return res.status(500).send(error.message);
     }

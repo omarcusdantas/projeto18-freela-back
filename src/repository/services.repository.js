@@ -5,7 +5,7 @@ export async function createService(userId, service) {
 
     await db.query(`
         INSERT INTO services ("user_id", "category_id" , "title", "description", "image", "price") 
-        VALUES ( $1, $2, $3, $4, $5, $6 )
+        VALUES ($1, $2, $3, $4, $5, $6)
     `, [
         userId,
         categoryId,
@@ -19,14 +19,13 @@ export async function createService(userId, service) {
 export async function getServices(state, limit, category) {
     let query = `
         SELECT 
-            s.id, s.title, c.category, s.description, s.image, s.price,
-            u.name as provider, u.email as contact, 
-            a.state as state, a.city as city
+            s.id, s.title, s.image,
+            a.state, a.city
         FROM services s
         INNER JOIN users u ON s.user_id = u.id
         LEFT JOIN categories c ON s.category_id = c.id
         LEFT JOIN addresses a ON u.id = a.user_id
-        WHERE s.active = true;
+        WHERE s.active = true
     `;
 
     let conditions = [];
@@ -55,13 +54,31 @@ export async function getServices(state, limit, category) {
     return services.rows;
 }
 
-export async function getServicesById(id) {
+export async function getServicesByUserId(id) {
     const services = await db.query(`
-        SELECT s.id, c.category, s.title, s.description, s.image, s.price, s.active 
+        SELECT s.id, s.title, c.category, s.description, s.image, s.price, s.active 
         FROM services s
         LEFT JOIN categories c ON s.category_id = c.id 
-        WHERE user_id = $1`, 
-        [id]
-    );
+        WHERE user_id = $1
+    `, [id]);
     return services.rows;
+}
+
+export async function getServiceById(id) {
+    const services = await db.query(`
+        SELECT 
+            s.id, s.title, c.category, s.description, s.image, s.price,
+            u.name as provider, u.email as contact, 
+            a.state, a.city
+        FROM services s
+        INNER JOIN users u ON s.user_id = u.id
+        LEFT JOIN categories c ON s.category_id = c.id
+        LEFT JOIN addresses a ON u.id = a.user_id
+        WHERE s.id = $1 AND s.active = true
+    `, [id]);
+
+    if (services.rowCount === 0) {
+        return "The id doesn't match an active service"
+    }
+    return services.rows[0];
 }

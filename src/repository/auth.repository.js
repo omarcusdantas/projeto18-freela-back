@@ -9,7 +9,7 @@ export async function createUser(userData) {
     const { name, email, password } = userData;
     await db.query(`
         INSERT INTO users ("name", "email" ,"password") 
-        VALUES ( $1, $2, $3 )
+        VALUES ($1, $2, $3)
     `, [name, email, password]);
 }
 
