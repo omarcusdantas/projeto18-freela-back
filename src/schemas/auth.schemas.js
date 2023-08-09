@@ -9,3 +9,8 @@ export const schemaSignup = joi.object({
     address: joi.string().required(),
     cep: joi.string().length(8).pattern(/^\d+$/).required(),
 });
+
+export const schemaSignin = joi.object({
+    email: joi.string().email().required(),
+    password: joi.string().required(),
+});
