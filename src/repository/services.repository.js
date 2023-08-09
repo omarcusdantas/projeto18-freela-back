@@ -18,8 +18,8 @@ export async function createService(userId, service) {
 export async function getServices(state, limit, category) {
     let query = `
         SELECT 
-            s.id, s.title, c.category, s.description, s.image,
-            u.name as provider, u.email as email,
+            s.id, s.title, c.category, s.description, s.image, 
+            u.name as provider, u.email as contact, 
             a.state as state, a.city as city
         FROM services s
         INNER JOIN users u ON s.user_id = u.id
@@ -51,5 +51,16 @@ export async function getServices(state, limit, category) {
     }
 
     const services = await db.query(query, params);
+    return services.rows;
+}
+
+export async function getServicesById(id) {
+    const services = await db.query(`
+        SELECT s.id, c.category, s.title, s.description, s.image, s.active 
+        FROM services s
+        LEFT JOIN categories c ON s.category_id = c.id 
+        WHERE user_id = $1`, 
+        [id]
+    );
     return services.rows;
 }

@@ -1,4 +1,4 @@
-import { createService, getServices } from "../repository/services.repository.js";
+import { createService, getServices, getServicesById } from "../repository/services.repository.js";
 
 export async function addService(req, res) {
     const userId = res.locals.userId;
@@ -20,6 +20,17 @@ export async function retrieveServices(req, res) {
 
     try {
         const services = await getServices(state, limit, category);
+        res.send(services);
+    } catch (error) {
+        return res.status(500).send(error.message);
+    }
+}
+
+export async function retrieveUserServices(req, res) {
+    const userId = res.locals.userId;
+
+    try {
+        const services = await getServicesById(userId);
         res.send(services);
     } catch (error) {
         return res.status(500).send(error.message);
