@@ -1,4 +1,4 @@
-import { createService } from "../repository/services.repository.js";
+import { createService, getServices } from "../repository/services.repository.js";
 
 export async function addService(req, res) {
     const userId = res.locals.userId;
@@ -11,6 +11,17 @@ export async function addService(req, res) {
         if (error.code === "23503") {
             return res.status(400).send("Invalid category id");
         }
+        return res.status(500).send(error.message);
+    }
+}
+
+export async function retrieveServices(req, res) {
+    const { state, limit, category } = req.query;
+
+    try {
+        const services = await getServices(state, limit, category);
+        res.send(services);
+    } catch (error) {
         return res.status(500).send(error.message);
     }
 }
