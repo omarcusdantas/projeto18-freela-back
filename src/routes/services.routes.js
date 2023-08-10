@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { addService, retrieveServices, retrieveUserServices, retrieveServiceById } from "../controllers/servicesController.js";
+import { addService, retrieveServices, retrieveUserServices, retrieveServiceById, removeService } from "../controllers/servicesController.js";
 import { validateSchema } from "../middlewares/validateSchema.js";
 import { validateAuth } from "../middlewares/validateAuth.js";
 import { serviceSchema } from "../schemas/services.schemas.js";
@@ -9,5 +9,6 @@ servicesRouter.post("/services", validateAuth, validateSchema(serviceSchema), ad
 servicesRouter.get("/services", validateAuth, retrieveServices);
 servicesRouter.get("/services/mine", validateAuth, retrieveUserServices);
 servicesRouter.get("/services/:id", validateAuth, retrieveServiceById);
+servicesRouter.delete("/services/:id", validateAuth, removeService);
 
 export default servicesRouter;
