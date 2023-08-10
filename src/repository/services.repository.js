@@ -68,7 +68,7 @@ export async function getServiceById(id) {
     const services = await db.query(`
         SELECT 
             s.id, s.title, c.category, s.description, s.image, s.price,
-            u.name as provider, u.email as contact, 
+            u.name as provider, u.phone as contact, 
             a.state, a.city
         FROM services s
         INNER JOIN users u ON s.user_id = u.id

@@ -28,7 +28,6 @@ CREATE TABLE public.addresses (
     user_id integer NOT NULL,
     state character(2) NOT NULL,
     city character varying(255) NOT NULL,
-    address text NOT NULL,
     cep character(8) NOT NULL,
     created_at timestamp without time zone DEFAULT now() NOT NULL
 );
@@ -107,8 +106,9 @@ ALTER SEQUENCE public.services_id_seq OWNED BY public.services.id;
 
 CREATE TABLE public.users (
     id integer NOT NULL,
-    email character varying(255) NOT NULL,
     name character varying(255) NOT NULL,
+    email character varying(255) NOT NULL,
+    phone character(11) NOT NULL,
     password character varying(255) NOT NULL,
     created_at timestamp without time zone DEFAULT now() NOT NULL
 );
@@ -230,6 +230,14 @@ ALTER TABLE ONLY public.services
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_email_key UNIQUE (email);
+
+
+--
+-- Name: users users_phone_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_phone_key UNIQUE (phone);
 
 
 --

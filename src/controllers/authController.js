@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { findUser, createUser, createAddressEntry } from "../repository/auth.repository.js";
+import { findUser, findPhone, createUser, createAddressEntry } from "../repository/auth.repository.js";
 
 async function checkAddress(cep, state, city) {
     const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
@@ -17,29 +17,26 @@ async function checkAddress(cep, state, city) {
 }
 
 export async function signup(req, res) {
-    const { name, email, password, state, city, address, cep } = req.body;
+    const userData = req.body;
 
     try {
-        const foundUser = await findUser(email);
+        const foundUser = await findUser(userData.email);
         if (foundUser) {
             return res.status(409).send("Email already registered");
         }
 
-        const addressMatch = await checkAddress(cep, state, city);
+        const foundPhone = await findPhone(userData.phone);
+        if (foundPhone) {
+            return res.status(409).send("Phone number already registered");
+        }
+
+        const addressMatch = await checkAddress(userData.cep, userData.state, userData.city);
         if (!addressMatch) {
             return res.status(400).send("State or city don't match cep");
         }
 
-        const hash = bcrypt.hashSync(password, 10);
-        const userData = { 
-            name,
-            email,
-            password: hash,
-            state,
-            city,
-            address,
-            cep,
-        }
+        const hash = bcrypt.hashSync(userData.password, 10);
+        userData.password = hash;
 
         await createUser(userData);
         await createAddressEntry(userData);
