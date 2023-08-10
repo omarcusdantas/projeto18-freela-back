@@ -83,17 +83,19 @@ export async function getServiceById(id) {
     return services.rows[0];
 }
 
-export async function getServiceOwnerId(id) {
-    const service = await db.query(`SELECT user_id as "userId" FROM services WHERE id = $1`, [id]);
+export async function getServiceState(id) {
+    const service = await db.query(`SELECT user_id as "ownerId", active FROM services WHERE id = $1`, [id]);
 
     if (service.rowCount === 0) {
         return "The id doesn't match a service"
     }
-    return service.rows[0].userId;
+    return service.rows[0];
 }
 
 export async function deleteService(id) {
     await db.query(`DELETE FROM services WHERE id = $1`, [id]);
 }
 
-//await db.query(`UPDATE services SET active = false WHERE id = $1`, [id]);
+export async function updateServiceStatus(id, active) {
+    await db.query(`UPDATE services SET active = $1 WHERE id = $2`, [active, id]);
+}
