@@ -10,7 +10,7 @@ async function checkAddress(cep, state, city) {
         return false;
     }
 
-    if(data.uf === state && data.localidade === city) {
+    if (data.uf === state && data.localidade === city) {
         return true;
     }
     return false;
@@ -47,7 +47,7 @@ export async function signup(req, res) {
 }
 
 export async function signin(req, res) {
-    const tokenExpirationSeconds = 60 * 60 * 24 * 30 // 30 days
+    const tokenExpirationSeconds = 60 * 60 * 24 * 30; // 30 days
     const { email, password } = req.body;
 
     try {

@@ -1,4 +1,4 @@
-import joi from 'joi';
+import joi from "joi";
 
 export const serviceSchema = joi.object({
     categoryId: joi.number().integer().required(),

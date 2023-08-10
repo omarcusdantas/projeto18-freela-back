@@ -1,4 +1,12 @@
-import { createService, getServices, getServicesByUserId, getServiceById, getServiceState, deleteService, updateServiceStatus } from "../repository/services.repository.js";
+import {
+    createService,
+    getServices,
+    getServicesByUserId,
+    getServiceById,
+    getServiceState,
+    deleteService,
+    updateServiceStatus,
+} from "../repository/services.repository.js";
 
 export async function addService(req, res) {
     const userId = res.locals.userId;
@@ -77,7 +85,6 @@ export async function changeServiceStatus(req, res) {
 
     try {
         const { ownerId, active } = await getServiceState(serviceId);
-        console.log(ownerId)
         if (ownerId !== userId) {
             return res.status(401).send("User is not the provider of the service");
         }
