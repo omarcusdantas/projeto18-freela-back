@@ -1,19 +1,26 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { findUser, findPhone, createUser, createAddressEntry } from "../repository/auth.repository.js";
+import axios from "axios";
 
 async function checkAddress(cep, state, city) {
-    const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
-    const data = await response.json();
+    try {
+        const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
+        const data = response.data;
 
-    if (data.erro) {
+        if (data.erro) {
+            return false;
+        }
+
+        if (data.uf === state && data.localidade === city) {
+            return true;
+        }
+
+        return false;
+    } catch (error) {
+        console.error('Error:', error);
         return false;
     }
-
-    if (data.uf === state && data.localidade === city) {
-        return true;
-    }
-    return false;
 }
 
 export async function signup(req, res) {
